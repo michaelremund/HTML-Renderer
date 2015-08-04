@@ -68,15 +68,23 @@ namespace TheArtOfDev.HtmlRenderer.PdfSharp.Adapters
 
         public override void PopClip()
         {
-            _clipStack.Pop();
-            _g.Restore();
+            RRect rect = _clipStack.Pop();
+            if( !rect.IsEmpty )
+            {
+                _g.Restore();
+            }
+
         }
 
         public override void PushClip(RRect rect)
         {
-            _clipStack.Push(rect);
-            _g.Save();
-            _g.IntersectClip(Utils.Convert(rect));
+            _clipStack.Push( rect );
+            if( !rect.IsEmpty )
+            {
+                _g.Save();
+                _g.IntersectClip( Utils.Convert( rect ) );
+            }
+
         }
 
         public override void PushClipExclude(RRect rect)
